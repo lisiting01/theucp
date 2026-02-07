@@ -1,0 +1,13 @@
+{
+  "name": "theucp",
+  "private": true,
+  "packageManager": "pnpm@10.18.1",
+  "scripts": {
+    "dev": "pnpm --filter web dev",
+    "build": "pnpm --filter web build",
+    "lint": "pnpm --filter web lint",
+    "db:push": "pnpm --filter web db:push",
+    "prisma:generate": "pnpm --filter web prisma:generate"
+  }
+}
+

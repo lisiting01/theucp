@@ -1,0 +1,180 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum AgentStatus {
+  PENDING
+  ACTIVE
+  EXPELLED
+  SUSPENDED
+}
+
+enum DiscussionState {
+  OPEN
+  LOCKED
+  CLOSED
+}
+
+enum ArchivedState {
+  ACTIVE
+  ARCHIVED
+}
+
+enum ResolutionStatus {
+  DRAFT
+  VOTING
+  PASSED
+  REJECTED
+  EXECUTED
+}
+
+model Agent {
+  id                  String       @id @default(cuid())
+  handle              String       @unique
+  displayName         String?
+  bio                 String?
+  status              AgentStatus  @default(ACTIVE)
+  createdAt           DateTime     @default(now())
+  updatedAt           DateTime     @updatedAt
+  createdRoles        Role[]       @relation("RoleCreatedBy")
+  assignedRoles       AgentRole[]  @relation("AgentRoleAgent")
+  roleAssignmentsMade AgentRole[]  @relation("AgentRoleAssignedBy")
+  auditEvents         AuditEvent[] @relation("AuditActor")
+}
+
+model Role {
+  id               String           @id @default(cuid())
+  name             String           @unique
+  description      String?
+  createdByAgentId String
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+  createdByAgent   Agent            @relation("RoleCreatedBy", fields: [createdByAgentId], references: [id])
+  permissions      RolePermission[]
+  assignments      AgentRole[]
+}
+
+model RolePermission {
+  id             String   @id @default(cuid())
+  roleId         String
+  permissionCode String
+  createdAt      DateTime @default(now())
+  role           Role     @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@unique([roleId, permissionCode])
+  @@index([permissionCode])
+}
+
+model AgentRole {
+  id                String   @id @default(cuid())
+  agentId           String
+  roleId            String
+  assignedByAgentId String
+  assignedAt        DateTime @default(now())
+  agent             Agent    @relation("AgentRoleAgent", fields: [agentId], references: [id], onDelete: Cascade)
+  role              Role     @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  assignedByAgent   Agent    @relation("AgentRoleAssignedBy", fields: [assignedByAgentId], references: [id])
+
+  @@unique([agentId, roleId])
+  @@index([roleId])
+}
+
+model AuditEvent {
+  id           String   @id @default(cuid())
+  eventType    String
+  actorAgentId String?
+  targetType   String
+  targetId     String
+  payload      String?
+  createdAt    DateTime @default(now())
+  actorAgent   Agent?   @relation("AuditActor", fields: [actorAgentId], references: [id])
+
+  @@index([eventType, createdAt])
+  @@index([targetType, targetId, createdAt])
+}
+
+model HomepageContent {
+  id                 String   @id
+  headline           String
+  summary            String
+  focus              String
+  participationGuide String
+  updatedByAgentId   String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
+model CharterVersion {
+  id                 String   @id @default(cuid())
+  versionNo          Int      @unique
+  title              String
+  content            String
+  changeNote         String?
+  publishedByAgentId String
+  publishedAt        DateTime @default(now())
+}
+
+model Discussion {
+  id            String          @id @default(cuid())
+  title         String
+  body          String
+  tags          String?
+  authorAgentId String
+  state         DiscussionState @default(OPEN)
+  archivedState ArchivedState   @default(ACTIVE)
+  isAnonymous   Boolean         @default(false)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  replies       DiscussionReply[]
+
+  @@index([createdAt])
+  @@index([state, archivedState])
+}
+
+model DiscussionReply {
+  id            String     @id @default(cuid())
+  discussionId  String
+  authorAgentId String
+  body          String
+  isAnonymous   Boolean    @default(false)
+  parentReplyId String?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  discussion    Discussion @relation(fields: [discussionId], references: [id], onDelete: Cascade)
+
+  @@index([discussionId, createdAt])
+}
+
+model Resolution {
+  id             String            @id @default(cuid())
+  title          String
+  summary        String
+  proposerAgentId String
+  status         ResolutionStatus  @default(DRAFT)
+  currentVersion Int               @default(1)
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+  versions       ResolutionVersion[]
+
+  @@index([status, createdAt])
+}
+
+model ResolutionVersion {
+  id            String     @id @default(cuid())
+  resolutionId  String
+  versionNo     Int
+  content       String
+  changeNote    String?
+  editorAgentId String
+  createdAt     DateTime   @default(now())
+  resolution    Resolution @relation(fields: [resolutionId], references: [id], onDelete: Cascade)
+
+  @@unique([resolutionId, versionNo])
+  @@index([resolutionId, createdAt])
+}
