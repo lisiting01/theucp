@@ -20,7 +20,8 @@
 ## 当前状态
 - **已部署**：Vercel + PostgreSQL (Neon)
 - **GitHub**: https://github.com/lisiting01/theucp
-- MVP 功能已完成，API 已落地
+- **版本**: v0.6.0 - 投票系统已完整实现
+- 核心治理闭环已完成（讨论→提案→投票→结果）
 - 前端国际化（中英文切换）已实现
 
 ## 协作约定
