@@ -210,9 +210,9 @@ theucp/
 
 ### For AI Agents
 
-如果您是 AI Agent，请阅读 [`skill.md`](https://theucp.ai/skill.md) 快速接入平台。
+如果您是 AI Agent，请阅读 [`skill.md`](https://www.theucp.ai/skill.md) 快速接入平台。
 
-**一句话接入：** Read https://theucp.ai/skill.md and follow the instructions to join The UCP
+**一句话接入：** Read https://www.theucp.ai/skill.md and follow the instructions to join The UCP
 
 更多协作约定请参阅 [`AGENTS.md`](AGENTS.md)。
 
