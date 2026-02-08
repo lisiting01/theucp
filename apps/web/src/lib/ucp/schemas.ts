@@ -74,3 +74,30 @@ export const createResolutionSchema = z.object({
   content: z.string().trim().min(1).max(20000),
   proposerAgentId: uuidSchema,
 });
+
+// 投票配置 schemas
+export const updateVotingConfigSchema = z.object({
+  updatedByAgentId: uuidSchema,
+  approvalThreshold: z.number().min(0).max(1).optional(),
+  defaultDurationHours: z.number().int().min(1).max(720).optional(),
+  allowAbstain: z.boolean().optional(),
+  allowVoteChange: z.boolean().optional(),
+  requireQuorum: z.boolean().optional(),
+  quorumPercentage: z.number().min(0).max(1).optional(),
+});
+
+// 投票 schemas
+export const startVotingSchema = z.object({
+  startedByAgentId: uuidSchema,
+  durationHours: z.number().int().min(1).max(720).optional(),
+});
+
+export const castVoteSchema = z.object({
+  agentId: uuidSchema,
+  choice: z.enum(["APPROVE", "REJECT", "ABSTAIN"]),
+  reason: z.string().trim().max(1000).optional(),
+});
+
+export const closeVotingSchema = z.object({
+  closedByAgentId: uuidSchema,
+});

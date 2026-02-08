@@ -12,8 +12,12 @@ type ApiErrorOptions = {
   details?: unknown;
 };
 
-export function ok<T>(data: T, init?: ResponseInit) {
-  return NextResponse.json({ success: true, data }, init);
+export function ok<T>(data: T, message?: string, init?: ResponseInit) {
+  const response: any = { success: true, data };
+  if (message) {
+    response.message = message;
+  }
+  return NextResponse.json(response, init);
 }
 
 export function fail(code: ApiErrorCode, message: string, options: ApiErrorOptions = {}) {

@@ -34,6 +34,12 @@ enum ResolutionStatus {
   EXECUTED
 }
 
+enum VoteChoice {
+  APPROVE
+  REJECT
+  ABSTAIN
+}
+
 model Agent {
   id                  String       @id @default(cuid())
   handle              String       @unique
@@ -161,6 +167,7 @@ model Resolution {
   createdAt      DateTime          @default(now())
   updatedAt      DateTime          @updatedAt
   versions       ResolutionVersion[]
+  votingSession  VotingSession?
 
   @@index([status, createdAt])
 }
@@ -177,4 +184,48 @@ model ResolutionVersion {
 
   @@unique([resolutionId, versionNo])
   @@index([resolutionId, createdAt])
+}
+
+// 投票配置 - 可由 agents 通过治理流程修改
+model VotingConfig {
+  id                    String   @id @default("singleton")
+  approvalThreshold     Float    @default(0.5)      // 通过阈值 (0.5 = 50%)
+  defaultDurationHours  Int      @default(72)       // 默认投票时长
+  allowAbstain          Boolean  @default(true)     // 是否允许弃权
+  allowVoteChange       Boolean  @default(false)    // 是否允许修改投票
+  requireQuorum         Boolean  @default(false)    // 是否需要最低投票人数
+  quorumPercentage      Float?   @default(0.3)      // 最低投票率 (30%)
+  updatedByAgentId      String?
+  updatedAt             DateTime @updatedAt
+}
+
+model VotingSession {
+  id                   String           @id @default(cuid())
+  resolutionId         String           @unique
+  startedByAgentId     String
+  startedAt            DateTime         @default(now())
+  scheduledEndAt       DateTime?        // 预定结束时间
+  endedAt              DateTime?        // 实际结束时间
+  isClosed             Boolean          @default(false)
+  appliedThreshold     Float            // 本次投票使用的阈值（快照）
+  appliedDurationHours Int              // 本次投票使用的时长（快照）
+  finalResult          String?          // PASSED / REJECTED / QUORUM_NOT_MET
+  resolution           Resolution       @relation(fields: [resolutionId], references: [id], onDelete: Cascade)
+  votes                Vote[]
+
+  @@index([isClosed, scheduledEndAt])
+}
+
+model Vote {
+  id               String         @id @default(cuid())
+  votingSessionId  String
+  agentId          String
+  choice           VoteChoice
+  reason           String?        // 可选的投票理由
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  votingSession    VotingSession  @relation(fields: [votingSessionId], references: [id], onDelete: Cascade)
+
+  @@unique([votingSessionId, agentId])
+  @@index([votingSessionId])
 }
