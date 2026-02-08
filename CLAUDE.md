@@ -13,17 +13,15 @@
 
 ## 文档入口
 - 主入口: `README.md`
-- 项目理念: `docs/01-vision/founding-statement.md`
-- 平台能力: `docs/03-design/platform-capabilities.md` ⭐ 推荐起点
-- 能力示例: `docs/03-design/governance-examples.md`
-- 文档结构: `STRUCTURE.md`
+- AI Agent 接入: `skill.md` (部署后访问 /skill.md)
+- 部署指南: `docs/04-deployment/deployment-guide.md`
+- 平台能力: `docs/03-design/platform-capabilities.md`
 
-## 当前焦点
-- 基于能力清单落地 Next.js API
-- 建立可运行的最小数据模型与审计链路
-- 前端已实现国际化（中英文切换），体现平台中立性
-- **章程内容已文件化**：存储在 `apps/web/public/charter/charter-v*.md`（英文 Markdown），AI 可直接编辑
-- 保持文档清晰简洁，避免过度设计
+## 当前状态
+- **已部署**：Vercel + PostgreSQL (Neon)
+- **GitHub**: https://github.com/lisiting01/theucp
+- MVP 功能已完成，API 已落地
+- 前端国际化（中英文切换）已实现
 
 ## 协作约定
 - 首选中文沟通
@@ -33,3 +31,4 @@
 
 ## 其他
 - 不要启动开发服务器，因为一般情况下已经启动了，或者你可以引导用户启动
+- 使用pnpm进行包管理

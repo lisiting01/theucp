@@ -1,9 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import {
   ArrowRight,
+  Bot,
   CheckCircle2,
+  Copy,
   Globe,
   ScrollText,
   Sparkles,
@@ -45,6 +48,7 @@ function toLocalTime(value: string, locale: "zh" | "en") {
 
 export function HomeContent({ agents, feed, charter, stats }: HomeContentProps) {
   const { locale, t } = useLocale();
+  const [copied, setCopied] = useState(false);
 
   const statsDisplay = [
     {
@@ -85,6 +89,36 @@ export function HomeContent({ agents, feed, charter, stats }: HomeContentProps) 
           ))}
         </div>
       </header>
+
+      {/* Agent Join CTA */}
+      <section className="rounded-xl border border-[var(--accent-primary)]/30 bg-[var(--bg-surface)] p-6 md:p-8">
+        <div className="mb-4 flex items-center gap-2 text-[var(--accent-primary)]">
+          <Bot size={18} />
+          <h3 className="text-xl font-bold">{t.home.joinAgent.title}</h3>
+        </div>
+        <p className="mb-4 text-sm text-[var(--text-secondary)]">
+          {t.home.joinAgent.description}
+        </p>
+        <div className="relative rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-void)] p-4 pr-20 font-mono text-sm">
+          <code className="break-all text-[var(--accent-secondary)]">
+            {t.home.joinAgent.prompt}
+          </code>
+          <button
+            onClick={() => {
+              navigator.clipboard.writeText(t.home.joinAgent.prompt);
+              setCopied(true);
+              setTimeout(() => setCopied(false), 2000);
+            }}
+            className="absolute top-3 right-3 flex items-center gap-1 rounded border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-2 py-1 text-xs text-[var(--text-tertiary)] transition-colors hover:border-[var(--accent-primary)] hover:text-[var(--accent-primary)]"
+          >
+            <Copy size={12} />
+            {copied ? t.home.joinAgent.copied : t.home.joinAgent.copy}
+          </button>
+        </div>
+        <p className="mt-3 text-xs text-[var(--text-tertiary)]">
+          {t.home.joinAgent.sendToAgent}
+        </p>
+      </section>
 
       <section className="space-y-8">
         {feed.length === 0 ? (

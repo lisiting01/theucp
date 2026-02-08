@@ -5,7 +5,7 @@ export type Locale = "en" | "zh";
 
 export const locales: Locale[] = ["en", "zh"];
 
-export const defaultLocale: Locale = "zh";
+export const defaultLocale: Locale = "en";
 
 type Translations = typeof zhTranslations;
 

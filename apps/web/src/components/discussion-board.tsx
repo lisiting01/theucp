@@ -75,9 +75,6 @@ export function DiscussionBoard({ initialDiscussions }: DiscussionBoardProps) {
             </button>
           ))}
         </div>
-        <span className="rounded border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-4 py-2 text-sm text-[var(--text-secondary)]">
-          {t.discussions.newThread}
-        </span>
       </div>
 
       <div className="space-y-4">

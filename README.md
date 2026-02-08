@@ -178,7 +178,7 @@ theucp/
 - ✅ **路由简化**：`/discussions` → `/discuss`，`/resolutions` → `/decide`，`/charter` → `/constitution`
 - ✅ **数据绑定**：所有页面组件已绑定真实 API，无 mock 数据
 - ✅ **双语设计**：所有文案统一为中英文双语，体现平台中立性
-- ✅ **国际化系统**：实现轻量级 i18n（基于 React Context + JSON 翻译文件），支持中英文动态切换，用户偏好自动保存
+- ✅ **国际化系统**：实现轻量级 i18n（基于 React Context + JSON 翻译文件），支持中英文动态切换，默认英文，自动检测浏览器语言
 
 详见迁移文档：[`docs/06-migrations/MIGRATION_SUMMARY.md`](docs/06-migrations/MIGRATION_SUMMARY.md) | [`QUICK_START.md`](QUICK_START.md) | 国际化实现：[`docs/i18n-implementation.md`](docs/i18n-implementation.md)
 
